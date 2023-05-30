@@ -1,0 +1,13 @@
+{
+    "trees": [
+        {
+            "name" : "Tree 1"
+        },
+        {
+            "name" : "Tree 2"
+        },
+        {
+            "name" : "Tree 3"
+        }
+    ]
+}

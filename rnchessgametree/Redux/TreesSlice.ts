@@ -1,17 +1,16 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import TreeNode from '../Classes/TreeNode';
 
-type TreesState = { trees: TreeNode[] };
+type TreesState = { trees: string[] };
 
-const emptyTreeList: TreeNode[] = [];
+const emptyTreeList: string[] = [];
 const initialState: TreesState = { trees: emptyTreeList};
 
 export const treesSlice = createSlice({
     name: 'trees',
     initialState,
     reducers: {
-        // action.payload is a new tree (root node)
-        addTree: (state, action: PayloadAction <TreeNode> ) => {
+        // action.payload is an ALREADY SERIALIZED tree (root node)
+        addTree: (state, action: PayloadAction <string> ) => {
             state.trees.push(action.payload);
         }
     }

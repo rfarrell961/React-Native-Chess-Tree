@@ -8,30 +8,34 @@ import {
     ScrollView,
     Button
 } from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
-import Chessboard, {ChessboardRef} from "react-native-chessboard";
+import React, { useState, useEffect, useRef } from 'react';
+import Chessboard, { ChessboardRef } from "react-native-chessboard";
 import styles from '../Styles/styles';
-import { useDispatch } from 'react-redux';
-import { addTree } from '../Redux/treesSlice';
-import TreeNode from '../Classes/treeNode';
+import { useAppDispatch, useAppSelector } from '../Redux/hooks';
+import { addNode } from '../Redux/nodesSlice';
+import ITreeNode, { getNextId } from '../Interfaces/treeNode';
 
-export default function ChoosePosition({ navigation, name })
+export default function ChoosePosition({ navigation, route })
 {
-    const dispatch = useDispatch();
+
+    const nodes: ITreeNode[] = useAppSelector((state) => state.nodes.nodes);
+    const dispatch = useAppDispatch();
+    const [ name, setName ] = useState(route.params.name);
     const chessboardRef = useRef<ChessboardRef>(null);
 
     const complete = () => {
+        let chessboardState = chessboardRef.current.getState();
 
-        if (chessboardRef == null)
-            return;
+        let newTree: ITreeNode = {
+            position: chessboardState.fen,
+            parent: null,
+            children: [],
+            name: name,
+            id: getNextId(nodes)
+        };
 
-        const state = chessboardRef.current?.getState();
-        //setFen(state.fen);
-
-        const root: TreeNode = new TreeNode(state.fen, null, name);
-        dispatch(addTree(JSON.stringify(root.toJSON())));
-        navigation.navigate("NodeView", {node: root});
-
+        dispatch(addNode(newTree));
+        navigation.navigate("NodeView", {id: newTree.id});
     }
 
     return (

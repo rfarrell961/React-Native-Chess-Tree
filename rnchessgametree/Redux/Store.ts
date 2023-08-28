@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import treesReducer from './treesSlice';
+import nodesReducer from './nodesSlice';
 
 export const store =  configureStore({
   reducer: {
-    trees: treesReducer
+    nodes: nodesReducer
   }
 });
 

@@ -10,23 +10,31 @@ import {
     TextInput
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
-import Chessboard, {ChessboardRef} from "react-native-chessboard";
 import styles from '../Styles/styles';
-import TreeNode from '../Classes/treeNode';
-import { useDispatch, useSelector } from 'react-redux';
-import { addTree } from '../Redux/treesSlice';
+import { useAppDispatch, useAppSelector } from '../Redux/hooks';
+import { addNode } from '../Redux/nodesSlice';
+import ITreeNode, { getNextId } from '../Interfaces/treeNode';
 
 const startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 export default function CreateTree({ navigation })
 {
-    const dispatch = useDispatch();
+    const nodes: ITreeNode[] = useAppSelector((state) => state.nodes.nodes);
+    const dispatch = useAppDispatch();
     const [name, setName] = useState("");
 
     const CreateFromStart = () => {
-        const root: TreeNode = new TreeNode(startFen, null, name);
-        dispatch(addTree(JSON.stringify(root.toJSON())));
-        navigation.navigate("NodeView", {node: root});
+
+        let newTree: ITreeNode = {
+            position: startFen,
+            parent: null,
+            children: [],
+            name: name,
+            id: getNextId(nodes)
+        }
+
+        dispatch(addNode(newTree));
+        navigation.navigate("NodeView", {id: newTree.id});
     }
 
     const CreateFromPosition = () => {

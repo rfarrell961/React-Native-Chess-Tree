@@ -9,42 +9,20 @@ import {
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import * as data from '../testData/userData.json';
-import { useSelector } from 'react-redux';
 import { useAppSelector, useAppDispatch } from '../Redux/hooks';
-import TreeNode from '../Classes/treeNode';
+import ITreeNode from '../Interfaces/treeNode';
 import styles from '../Styles/styles';
-
-// Item for trees flatlist
-const Item = ({item, navigation}) => (
-    <TouchableOpacity style={styles.listItem} onPress={(navigation.navigate("EditTree", {root: item}))}>
-        <Text style={styles.buttonText}>{item.name}</Text>
-    </TouchableOpacity>
-);
 
 export default function TreeManager({ navigation })
 {   
-    // console.log(data.trees[0].name)
-    const treesRaw: string[] = useAppSelector((state) => state.trees.trees);
-    const [trees, setTrees] = useState<TreeNode[] | undefined>([]);
+    const nodes: ITreeNode[] = useAppSelector((state) => state.nodes.nodes);
     const dispatch = useAppDispatch();
-    //const [trees, setTrees] = useState();
 
-    useEffect(() => {
-        setTrees(deserializeTrees(treesRaw));
-    }, [treesRaw])
-
-    const deserializeTrees = (input: string[]) : TreeNode[] => {
-
-        let tempTrees: TreeNode[] = [];
-
-        for (let raw of input)
-        {
-            let obj = JSON.parse(raw);
-            tempTrees.push(TreeNode.fromJSON(obj));
-        }
-
-        return tempTrees
-    }
+    const Item = ({item}) => (
+        <TouchableOpacity style={styles.listItem} onPress={() => (navigation.navigate("NodeView", {id: item.id}))}>
+            <Text style={styles.buttonText}>{item.name}</Text>
+        </TouchableOpacity>
+    );
 
     return (
         <SafeAreaView style={styles.container}>
@@ -53,11 +31,15 @@ export default function TreeManager({ navigation })
 
             <ScrollView style={{flexGrow: 0, maxHeight: "50%"}}>
                 {
-                    trees.map((item, index) => <Item item={item} navigation={navigation} key={index}/>)
+                    // Only show parent == null (roots)
+                    nodes.map((item, index) => {
+                        if (item.parent == null)
+                            return <Item item={item} key={index}/>
+                    })
                 }
             </ScrollView>
             
-            <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.push("Create")}>
+            <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate("Create")}>
                 <Text style={styles.buttonText}>Create a New Game Tree!</Text>
             </TouchableOpacity>
 

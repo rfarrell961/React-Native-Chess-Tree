@@ -32,7 +32,8 @@ export default function NodeView({ navigation, route })
     const nodes: ITreeNode[] = useAppSelector((state) => state.nodes.nodes);
     const dispatch = useAppDispatch();
     const [id, setId] = useState<number | undefined>(route.params.id);
-    const [node, setNode] = useState<ITreeNode | undefined>(getNode(id, nodes));
+    const [root, setRoot] = useState<ITreeNode | undefined>(getNode(id, nodes));
+    const [node, setNode] = useState<ITreeNode | undefined>(root);
     const chessboardRef = useRef<ChessboardRef>(null);
 
     useEffect(() => {
@@ -44,32 +45,35 @@ export default function NodeView({ navigation, route })
 
     }, [node])
 
-    const onMove = () => {
+    const onMove = ({ move, state }) => {
 
-        let state = chessboardRef.current.getState();
+        //let state = chessboardRef.current.getState();
 
         let newTree: ITreeNode = {
             position: state.fen,
             parent: node.id,
             children: [],
-            name: "",
+            name: move.to,
             id: getNextId(nodes)
         }
 
         dispatch(addNode(newTree));
-        navigation.push("NodeView", {id: newTree.id});
+        setNode(newTree);
     }
 
     const Item = ({item}) => (
-        <TouchableOpacity style={styles.listItem} onPress={() => (navigation.push("NodeView", {id: item.id}))}>
+        <TouchableOpacity style={styles.listItem} onPress={() => (setNode(item))}>
             <Text style={styles.buttonText}>{item.name}</Text>
         </TouchableOpacity>
     );
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.headingText}>Edit "{node.name}" tree</Text>
-            <Chessboard ref={chessboardRef} onMove={onMove}/>
+            <Text style={[styles.headingText, {marginHorizontal: 20, marginTop: 20}]}>Tree: {root.name} </Text>
+            {(node.parent && node.parent > 0) && <Text style={[styles.subHeadingText, {marginHorizontal: 20}]}>Branch: {node.name}</Text>}
+            <View style={{marginTop: 20, alignSelf: 'center'}}>
+                <Chessboard ref={chessboardRef} onMove={onMove}/>
+            </View>
             <ScrollView style={{flexGrow: 0, maxHeight: "50%"}}>
                 {
                     nodes.map((item, index) => {
@@ -78,8 +82,17 @@ export default function NodeView({ navigation, route })
                     })
                 }
             </ScrollView>
-            <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate("Home")}>
+            
+            {(node.parent && node.parent > 0) && 
+            <TouchableOpacity style={[styles.buttonStyle, {marginBottom: 5}]} onPress={() => setNode(getNode(node.parent, nodes))}>
+                <Text style={styles.buttonText}>Back</Text>
+            </TouchableOpacity>}
+
+            <TouchableOpacity style={[styles.buttonStyle, {marginTop: 5}]} onPress={() => navigation.navigate("Home")}>
                 <Text style={styles.buttonText}>Go Home</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.buttonStyle, {marginTop: 5}]} onPress={() => navigation.navigate("Home")}>
+                <Text style={styles.buttonText}>Save as new tree</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );

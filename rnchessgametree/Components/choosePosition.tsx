@@ -17,7 +17,6 @@ import ITreeNode, { getNextId } from '../Interfaces/treeNode';
 
 export default function ChoosePosition({ navigation, route })
 {
-
     const nodes: ITreeNode[] = useAppSelector((state) => state.nodes.nodes);
     const dispatch = useAppDispatch();
     const [ name, setName ] = useState(route.params.name);
@@ -40,8 +39,14 @@ export default function ChoosePosition({ navigation, route })
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.headingText}>Please Select a Starting Position</Text>
-            <Chessboard ref={chessboardRef}/>
+            <Text style={[styles.headingText, {margin: 20}]}>Please Select a Starting Position</Text>
+            <View style={{alignSelf: 'center'}}>
+                <Chessboard ref={chessboardRef}/>
+            </View>
+            
+            <TouchableOpacity style={styles.buttonStyle} onPress={() => {chessboardRef.current.resetBoard()}}>
+                <Text style={styles.buttonText}>Reset</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.buttonStyle} onPress={complete}>
                 <Text style={styles.buttonText}>Done</Text>
             </TouchableOpacity>

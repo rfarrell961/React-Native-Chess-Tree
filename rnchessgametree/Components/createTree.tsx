@@ -43,7 +43,7 @@ export default function CreateTree({ navigation })
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.headingText}>New Tree:</Text>
+            <Text style={[styles.headingText, {margin: 20}]}>New Tree:</Text>
             <TextInput 
                 style={styles.input} 
                 placeholder='Name' 
@@ -55,6 +55,9 @@ export default function CreateTree({ navigation })
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonStyle} onPress={CreateFromPosition}>
                 <Text style={styles.buttonText}>From Custom Position</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonStyleRed} onPress={() => {navigation.popToTop()}}>
+                <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );

@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import nodesReducer from './nodesSlice';
+import settingsReducer from './settingsSlice';
 
 export const store =  configureStore({
   reducer: {
-    nodes: nodesReducer
+    nodes: nodesReducer,
+    settings: settingsReducer,
   }
 });
 

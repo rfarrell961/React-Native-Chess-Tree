@@ -4,6 +4,7 @@ import RootNav from './Navigation/rootNav';
 
 
 export default function App() {
+
   return (
     <Provider store={store}>
       <RootNav/>

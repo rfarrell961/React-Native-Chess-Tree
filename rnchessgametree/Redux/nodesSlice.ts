@@ -1,9 +1,31 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import ITreeNode from '../Interfaces/treeNode';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaViewBase } from 'react-native';
 
 interface updateArgs {
     id: number,
     node: ITreeNode
+}
+
+
+const saveData = async (nodes) => {
+    try {
+
+        // Clear and reset nodes
+        try {  
+            AsyncStorage.removeItem('nodes');
+        }
+        catch (e)
+        {
+            console.log("Save Data Error 1:", e);
+        }
+        const jsonValue = JSON.stringify(nodes);
+        await AsyncStorage.setItem('nodes', jsonValue);
+
+    } catch (e) {
+        console.log("Save Data Error 2:", e)
+    }
 }
 
 export const nodesSlice = createSlice({
@@ -20,14 +42,16 @@ export const nodesSlice = createSlice({
             state.nodes.push(newNode);
 
             // If parent isn't null, add to parents children array
-            if (newNode.parent == null)
-                return;
-
-            for (let i = 0; i < state.nodes.length; i++)
+            if (newNode.parent != null)
             {
-                if (state.nodes[i].id === newNode.parent)
-                    state.nodes[i].children.push(newNode.id);
+                for (let i = 0; i < state.nodes.length; i++)
+                {
+                    if (state.nodes[i].id === newNode.parent)
+                        state.nodes[i].children.push(newNode.id);
+                }
             }
+
+            saveData(state.nodes);
         },
         // Pass ID
         deleteNode: (state, action: PayloadAction <number>) => {
@@ -36,7 +60,7 @@ export const nodesSlice = createSlice({
 
                 for (let i = 0; i < state.nodes.length; i++)
                 {
-                    if (state.nodes[i].id == action.payload)
+                    if (id == action.payload)
                     {
                         // Delete all children nodes recursively
                         for (let j = 0; j < state.nodes[i].children.length; j++)
@@ -49,6 +73,7 @@ export const nodesSlice = createSlice({
             };
 
             deleteNode(action.payload);
+            saveData(state.nodes);
         },
         //Pass ID
         updateNode: {
@@ -60,6 +85,8 @@ export const nodesSlice = createSlice({
                         state.nodes[i] = action.payload.node;
                     }
                 }
+
+                saveData(state.nodes);
             },
             prepare(id: number, node: ITreeNode) {
                 return {
@@ -69,11 +96,14 @@ export const nodesSlice = createSlice({
                     }
                 }
             }
+        },
+        setNodes: (state, action: PayloadAction <ITreeNode[]>) => {
+            state.nodes = action.payload
         }
     }
 });
 
 // Action creators are generated for each case reducer function
-export const { addNode, deleteNode, updateNode } = nodesSlice.actions;
+export const { addNode, deleteNode, updateNode, setNodes } = nodesSlice.actions;
 
 export default nodesSlice.reducer;

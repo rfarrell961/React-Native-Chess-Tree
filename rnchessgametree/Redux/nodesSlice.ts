@@ -60,7 +60,7 @@ export const nodesSlice = createSlice({
 
                 for (let i = 0; i < state.nodes.length; i++)
                 {
-                    if (id == action.payload)
+                    if (state.nodes[i].id == id)
                     {
                         // Delete all children nodes recursively
                         for (let j = 0; j < state.nodes[i].children.length; j++)

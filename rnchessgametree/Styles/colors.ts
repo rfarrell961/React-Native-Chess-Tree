@@ -1,23 +1,23 @@
-
-
 interface IPalette { 
     primary: string,
     compliment: string,
     triad: string,
-    backgound: string,
+    background: string,
+    background2: string,
     text: string,
 }
 
 // Mode Keys
 // 1: Light Mode
 // 2: DarkMode
-export default function GetColors(mode: number) : IPalette
+export default function getColors(mode: number) : IPalette
 {
     const lightMode: IPalette = {
         primary: "#ECA049",
         compliment: "#4995EC",
         triad: "#49eca0",
-        backgound: "#FFFFFF",
+        background: "#FFFAF0",
+        background2: "#FFFAF0",
         text: "#000000"
     }
 
@@ -25,8 +25,9 @@ export default function GetColors(mode: number) : IPalette
         primary: "#ECA049",
         compliment: "#4995EC",
         triad: "#49eca0",
-        backgound: "#FFFAF0",
-        text: "#FFFFFF"
+        background: "#121212",
+        background2: "#282828",
+        text: "#FFFAF0"
     }
 
 

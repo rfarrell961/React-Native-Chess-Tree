@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import Chessboard, { ChessboardRef } from "react-native-chessboard";
-import styles from '../Styles/styles';
+import getStyles from '../Styles/styles';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { addNode } from '../Redux/nodesSlice';
 import ITreeNode, { getNextId } from '../Interfaces/treeNode';
@@ -21,6 +21,8 @@ export default function ChoosePosition({ navigation, route })
     const dispatch = useAppDispatch();
     const [ name, setName ] = useState(route.params.name);
     const chessboardRef = useRef<ChessboardRef>(null);
+    const settings = useAppSelector((state) => state.settings);
+    const styles = useAppSelector((state) => state.settings.styles);
 
     const complete = () => {
         let chessboardState = chessboardRef.current.getState();

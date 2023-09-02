@@ -4,10 +4,20 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CreateTree from '../Components/createTree';
 import ChoosePosition from '../Components/choosePosition';
 import NodeView from '../Components/nodeView';
+import HomeHeader from '../Components/homeHeader';
+import SettingsPage from '../Components/settings';
+import { useAppSelector } from '../Redux/hooks';
+import { useState } from 'react';
+import getColors from '../Styles/colors';
+import getStyles from '../Styles/styles';
 
 const Stack = createNativeStackNavigator();
 
 export default function RootNav() {
+
+    const settings = useAppSelector((state) => state.settings);
+    const [colors, setColors] = useState(getColors(settings.paletteMode));
+    const [styles, setStyles] = useState(getStyles(settings.paletteMode));
 
     return (
         <NavigationContainer>
@@ -15,7 +25,9 @@ export default function RootNav() {
                 <Stack.Screen
                     name="Home"
                     component={TreeManager}
-                    options={{headerShown: false}}
+                    options={{
+                        header: HomeHeader,
+                    }}
                 />
                 <Stack.Screen
                     name="Create" 
@@ -31,6 +43,16 @@ export default function RootNav() {
                     name="NodeView"
                     component={NodeView}
                     options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="Settings"
+                    component={SettingsPage}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: colors.background
+                        },
+                        headerTitleStyle: styles.headingText
+                    }}
                 />
             </Stack.Navigator>
         </NavigationContainer>

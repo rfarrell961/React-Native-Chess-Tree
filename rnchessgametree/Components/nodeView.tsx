@@ -5,36 +5,28 @@ import {
     SafeAreaView,
     ScrollView
 } from "react-native";
-import styles from "../Styles/styles";
+import getStyles from "../Styles/styles";
 import ITreeNode, {getNextId} from "../Interfaces/treeNode";
 import { updateNode, addNode } from "../Redux/nodesSlice";
 import { useEffect, useRef, useState } from "react";
 import Chessboard, { ChessboardRef } from "react-native-chessboard";
 import { useIsFocused } from '@react-navigation/native';
 import { useAppSelector, useAppDispatch } from '../Redux/hooks';
+import { getNode } from "../Utility/helper";
 
 const startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 // Pass in id to route.params?
 export default function NodeView({ navigation, route })
 {
-    const getNode = (id: number, nodes: ITreeNode[]): ITreeNode => {
-
-        for (let i = 0; i < nodes.length; i++)
-        {
-            if (nodes[i].id === id)
-                return nodes[i];
-        }
-    
-        return null;
-    }
-
     const nodes: ITreeNode[] = useAppSelector((state) => state.nodes.nodes);
     const dispatch = useAppDispatch();
     const [id, setId] = useState<number | undefined>(route.params.id);
     const [root, setRoot] = useState<ITreeNode | undefined>(getNode(id, nodes));
     const [node, setNode] = useState<ITreeNode | undefined>(root);
     const chessboardRef = useRef<ChessboardRef>(null);
+    const settings = useAppSelector((state) => state.settings);
+    const styles = useAppSelector((state) => state.settings.styles);
 
     useEffect(() => {
 

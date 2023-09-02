@@ -12,30 +12,21 @@ import React, {useState, useEffect} from 'react';
 import * as data from '../testData/userData.json';
 import { useAppSelector, useAppDispatch } from '../Redux/hooks';
 import ITreeNode from '../Interfaces/treeNode';
-import styles from '../Styles/styles';
+import getStyles from '../Styles/styles';
 import Chessboard from "react-native-chessboard";
 import { Icon } from 'react-native-elements';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { deleteNode, updateNode } from '../Redux/nodesSlice';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { getNode } from '../Utility/helper';
 
 
 export default function TreeManager({ navigation })
 {   
     const nodes: ITreeNode[] = useAppSelector((state) => state.nodes.nodes);
     const dispatch = useAppDispatch();
-
-    const getNode = (id: number, nodes: ITreeNode[]): ITreeNode => {
-
-        for (let i = 0; i < nodes.length; i++)
-        {
-            if (nodes[i].id === id)
-                return nodes[i];
-        }
-    
-        return null;
-    }
-
+    const settings = useAppSelector((state) => state.settings);
+    const styles = useAppSelector((state) => state.settings.styles);
 
     const RenderRightSwipe = () => {
         return (
@@ -125,7 +116,7 @@ export default function TreeManager({ navigation })
 
             <Text style={[styles.headingText, {margin: 20}]}>Your Trees:</Text>
 
-            <ScrollView bounces={false} style={{flexGrow: 0, maxHeight: "50%", borderTopWidth: .5, borderBottomWidth: .5}}>
+            <ScrollView bounces={false} style={{flexGrow: 0, maxHeight: "50%"}}>
                 {
                     // Only show parent == null (roots)
                     nodes.map((item, index) => {

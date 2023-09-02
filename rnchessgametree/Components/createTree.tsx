@@ -10,7 +10,7 @@ import {
     TextInput
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
-import styles from '../Styles/styles';
+import getStyles from '../Styles/styles';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { addNode } from '../Redux/nodesSlice';
 import ITreeNode, { getNextId } from '../Interfaces/treeNode';
@@ -22,6 +22,8 @@ export default function CreateTree({ navigation })
     const nodes: ITreeNode[] = useAppSelector((state) => state.nodes.nodes);
     const dispatch = useAppDispatch();
     const [name, setName] = useState("");
+    const settings = useAppSelector((state) => state.settings);
+    const styles = useAppSelector((state) => state.settings.styles);
 
     const CreateFromStart = () => {
 

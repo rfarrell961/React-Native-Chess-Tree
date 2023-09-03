@@ -5,6 +5,7 @@ interface IPalette {
     background: string,
     background2: string,
     text: string,
+    text2: string
 }
 
 // Mode Keys
@@ -18,7 +19,8 @@ export default function getColors(mode: number) : IPalette
         triad: "#49eca0",
         background: "#FFFAF0",
         background2: "#FFFAF0",
-        text: "#000000"
+        text: "#000000",
+        text2: "#666666"
     }
 
     const darkMode: IPalette = {
@@ -27,7 +29,8 @@ export default function getColors(mode: number) : IPalette
         triad: "#49eca0",
         background: "#121212",
         background2: "#282828",
-        text: "#FFFAF0"
+        text: "#FFFAF0",
+        text2: "#b2b2b2",
     }
 
 

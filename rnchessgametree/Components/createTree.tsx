@@ -24,6 +24,7 @@ export default function CreateTree({ navigation })
     const [name, setName] = useState("");
     const settings = useAppSelector((state) => state.settings);
     const styles = useAppSelector((state) => state.settings.styles);
+    const colors = useAppSelector((state) => state.settings.colors);
 
     const CreateFromStart = () => {
 
@@ -51,6 +52,8 @@ export default function CreateTree({ navigation })
                 placeholder='Name' 
                 maxLength={35} 
                 onChangeText={text => setName(text)}
+                placeholderTextColor={colors.text2}
+                
             />
             <TouchableOpacity style={styles.buttonStyle} onPress={CreateFromStart}>
                 <Text style={styles.buttonText}>From Starting Position</Text>

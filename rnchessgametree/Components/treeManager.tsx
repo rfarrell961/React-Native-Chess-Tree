@@ -12,14 +12,15 @@ import {
 import React, {useState, useEffect} from 'react';
 import { useAppSelector, useAppDispatch } from '../Redux/hooks';
 import ITreeNode from '../Interfaces/treeNode';
-import Chessboard from "react-native-chessboard";
+// import Chessboard from "react-native-chessboard";
+import Chessboard from './chessboard';
 import { Icon } from 'react-native-elements';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { deleteNode, updateNode, setNodes } from '../Redux/nodesSlice';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getNode } from '../Utility/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import InsetShadow from 'react-native-inset-shadow';
 
 export default function TreeManager({ navigation })
 {   
@@ -27,6 +28,7 @@ export default function TreeManager({ navigation })
     const dispatch = useAppDispatch();
     const settings = useAppSelector((state) => state.settings);
     const styles = useAppSelector((state) => state.settings.styles);
+    const colors = useAppSelector((state) => state.settings.colors);
     const [isLoading, setIsLoading] = useState(true);
 
     // Get local storage when app loads
@@ -111,17 +113,24 @@ export default function TreeManager({ navigation })
             <TouchableOpacity style={styles.listItem} onPress={() => (navigation.navigate("NodeView", {id: item.id}))}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <View style={{marginLeft: 10, marginRight: 50, borderWidth:.5}}>
-                        <Chessboard fen={item.position} boardSize={75}/>
+                        {/* <Chessboard 
+                            fen={item.position} 
+                            boardSize={75} 
+                            gestureEnabled={false}
+                            withLetters={false}
+                            withNumbers={false}
+                        /> */}
+                        <Chessboard fen={item.position} size={75}/>
                     </View>
                     <Text style={[styles.listItemText, {marginRight: 10}]}>{item.name}</Text>
 
                     <TouchableOpacity onPress={() => EditName(item.id)}>
-                        <Icon style={{marginRight: 20}} name='edit' type='material-icons'/>
+                        <Icon style={{marginRight: 20}} name='edit' type='material-icons' color={colors.text}/>
                     </TouchableOpacity>
                 </View>
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Icon style={{marginRight: 20}} name='arrow-forward-ios' type='material-icons' />
+                    <Icon style={{marginRight: 20}} name='arrow-forward-ios' type='material-icons' color={colors.text}/>
                 </View>
 
             </TouchableOpacity>
@@ -136,17 +145,23 @@ export default function TreeManager({ navigation })
             </TouchableOpacity>
 
             <Text style={[styles.headingText, {margin: 20}]}>Your Trees:</Text>
-            {(isLoading) ?
+            { isLoading ?
             <ActivityIndicator size={50}/> :
-            <ScrollView bounces={false} style={{flexGrow: 0, maxHeight: "50%"}}>
-                {
-                    // Only show parent == null (roots)
-                    nodes.map((item, index) => {
-                        if (item.parent == null)
-                            return <Item item={item} key={index}/>
-                    })
-                }
-            </ScrollView>
+            <InsetShadow
+                containerStyle={{
+                    flex: 1, 
+                }}
+            >
+                <ScrollView bounces={false} style={{flexGrow: 0}}>
+                    {
+                        // Only show parent == null (roots)
+                        nodes.map((item, index) => {
+                            if (item.parent == null)
+                                return <Item item={item} key={index}/>
+                        })
+                    }
+                </ScrollView>
+            </InsetShadow>
             }    
         </SafeAreaView>
     );

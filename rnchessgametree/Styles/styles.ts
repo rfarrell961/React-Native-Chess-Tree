@@ -1,3 +1,4 @@
+import { color } from 'react-native-reanimated';
 import getColors from './colors';
 
 import {
@@ -55,7 +56,7 @@ export default function getStyles(mode: number) {
             alignSelf: 'center',
             borderRadius: 5,
             margin: 20,
-            height: 40,
+            height: 50,
             justifyContent: 'center',
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 1 },
@@ -66,25 +67,28 @@ export default function getStyles(mode: number) {
             backgroundColor: 'pink',
             width: '65%',
             alignSelf: 'center',
-            borderRadius: 10,
-            borderWidth: .5,
+            borderRadius: 5,
             margin: 20,
             height: 40,
-            justifyContent: 'center'
+            justifyContent: 'center',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.8,
+            shadowRadius: 1,  
         },
         buttonText: {
             textAlign: 'center',
             fontWeight: 'bold',
-            color: colors.text
+            color: 'black'
         },
         listItemText: {
             fontSize: 25,
-            // color: colors.text
+            color: colors.text
         },
         listItem: {
-            backgroundColor: "white", 
-            borderTopWidth: .5, 
-            borderBottomWidth: .5,
+            backgroundColor: colors.background2, 
+            borderTopWidth: .25, 
+            borderBottomWidth: .25,
             flex: 1, 
             flexDirection: 'row',
             width: '100%', 
@@ -99,6 +103,8 @@ export default function getStyles(mode: number) {
             margin: 12,
             borderWidth: .5,
             padding: 10,
+            color: colors.text,
+            backgroundColor: colors.background2
         }
     });
 

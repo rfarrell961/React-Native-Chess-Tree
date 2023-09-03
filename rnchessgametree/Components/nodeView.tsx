@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import Chessboard, { ChessboardRef } from "react-native-chessboard";
 import { useIsFocused } from '@react-navigation/native';
 import { useAppSelector, useAppDispatch } from '../Redux/hooks';
-import { getNode } from "../Utility/helper";
+import { getNode, flipFen } from "../Utility/helper";
 
 const startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -37,11 +37,24 @@ export default function NodeView({ navigation, route })
 
     }, [node])
 
+    const flipBoard = () => {
+        let fen = node.position;
+        
+        let newNode = {...node};
+        newNode.position = flipFen(fen);
+
+        console.log("New Fen:", newNode.position)
+
+        dispatch(addNode(newNode));
+        setNode(newNode);
+
+    }
+
     const onMove = ({ move, state }) => {
 
         //let state = chessboardRef.current.getState();
 
-        let newTree: ITreeNode = {
+        let newNode: ITreeNode = {
             position: state.fen,
             parent: node.id,
             children: [],
@@ -49,8 +62,8 @@ export default function NodeView({ navigation, route })
             id: getNextId(nodes)
         }
 
-        dispatch(addNode(newTree));
-        setNode(newTree);
+        dispatch(addNode(newNode));
+        setNode(newNode);
     }
 
     const Item = ({item}) => (
@@ -83,8 +96,11 @@ export default function NodeView({ navigation, route })
             <TouchableOpacity style={[styles.buttonStyle, {marginTop: 5}]} onPress={() => navigation.navigate("Home")}>
                 <Text style={styles.buttonText}>Go Home</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.buttonStyle, {marginTop: 5}]} onPress={() => navigation.navigate("Home")}>
+            <TouchableOpacity style={[styles.buttonStyle, {marginTop: 5}]}>
                 <Text style={styles.buttonText}>Save as new tree</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.buttonStyle, {marginTop: 5}]} onPress={flipBoard}>
+                <Text style={styles.buttonText}>Flip Board</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );

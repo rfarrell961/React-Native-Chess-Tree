@@ -11,4 +11,21 @@ const getNode = (id: number, nodes: ITreeNode[]): ITreeNode => {
     return null;
 }
 
-export { getNode }
+const flipFen = (fen: string): string => {
+    let newFen: string = "";
+    
+    let idx = fen.indexOf(" ");
+    let fen1 = fen.slice(0, idx);
+    let fen2 = fen.slice(idx)
+
+    for (let i = fen1.length - 1; i >= 0; i--)
+    {
+        newFen += fen1[i];
+    }
+
+    newFen += fen2;
+
+    return newFen;
+}
+
+export { getNode, flipFen }

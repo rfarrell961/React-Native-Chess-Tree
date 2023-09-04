@@ -42,7 +42,9 @@ export default function RootNav() {
                 <Stack.Screen
                     name="NodeView"
                     component={NodeView}
-                    options={{headerShown: false}}
+                    options={{
+                        headerShown: false,
+                    }}
                 />
                 <Stack.Screen
                     name="Settings"

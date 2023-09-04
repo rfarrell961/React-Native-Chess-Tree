@@ -22,6 +22,7 @@ import { getNode } from '../Utility/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import InsetShadow from 'react-native-inset-shadow';
 import NodeList from './nodeList';
+import { setSettings } from '../Redux/settingsSlice';
 
 export default function TreeManager({ navigation })
 {   
@@ -35,18 +36,29 @@ export default function TreeManager({ navigation })
     // Not sure if thsi is the best way to do it
     useEffect(() => {
       
-        const getData = async () => {
+        const getNodes = async () => {
           try {
             const jsonValue = await AsyncStorage.getItem('nodes');
-            // console.log("Loaded", (JSON.stringify((JSON.parse(jsonValue)), null, 2)));
             dispatch(setNodes(jsonValue != null ? JSON.parse(jsonValue) : []));
           } catch (e) {
             console.log("Get Data Error:", e)
             dispatch(setNodes([]));
           }
         };
+
+        const getSettings = async () => {
+            try {
+              const jsonValue = await AsyncStorage.getItem('settings');
+              dispatch(setSettings(jsonValue != null ? JSON.parse(jsonValue) : null));
+
+            } catch (e) {
+              console.log("Get Data Error:", e)
+              dispatch(setSettings(null));
+            }
+          };
         
-        getData();
+        getNodes();
+        getSettings();
         setIsLoading(false);
     
     }, [])

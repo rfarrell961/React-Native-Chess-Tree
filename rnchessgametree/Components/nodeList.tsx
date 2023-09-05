@@ -7,7 +7,7 @@ import {
 } from "react-native"
 import { Swipeable } from "react-native-gesture-handler";
 import { Icon } from "react-native-elements";
-import Chessboard from "./chessboard";
+import Chessboard from "./chessboardDisplayOnly";
 import { useAppDispatch } from "../Redux/hooks";
 import { deleteNode, updateNode } from "../Redux/nodesSlice";
 import ITreeNode from "../Interfaces/treeNode";
@@ -96,7 +96,7 @@ export default function NodeList({ onClick, styles, colors, nodes, parent })
 
 
     return (
-        <ScrollView bounces={false} style={{flexGrow: 0}}>
+        <ScrollView bounces={false} style={{flexGrow: 1}}>
         {
             // Only show parent == null (roots)
             nodes.map((item, index) => {

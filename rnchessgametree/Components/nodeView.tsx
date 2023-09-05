@@ -40,8 +40,8 @@ export default function NodeView({ navigation, route })
 
     const splitTree = () => {
         Alert.prompt(
-            "Edit Name",
-            "",
+            "Enter New Tree Name",
+            "Create a new tree from the current position",
             [   
                 {
                     text: 'Ok',

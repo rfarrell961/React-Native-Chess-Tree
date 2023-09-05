@@ -13,7 +13,7 @@ import React, {useState, useEffect} from 'react';
 import { useAppSelector, useAppDispatch } from '../Redux/hooks';
 import ITreeNode from '../Interfaces/treeNode';
 // import Chessboard from "react-native-chessboard";
-import Chessboard from './chessboard';
+import Chessboard from './chessboardDisplayOnly';
 import { Icon } from 'react-native-elements';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { deleteNode, updateNode, setNodes } from '../Redux/nodesSlice';

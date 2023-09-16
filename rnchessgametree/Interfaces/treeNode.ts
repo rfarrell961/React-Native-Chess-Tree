@@ -5,7 +5,8 @@ export default interface ITreeNode {
     parent: number | null, // Parent ID
     children: number[], // Array of child IDs
     name: string,
-    id?: number
+    id?: number,
+    flipped: boolean
 }
 
 export function getNextId(nodes: ITreeNode[])

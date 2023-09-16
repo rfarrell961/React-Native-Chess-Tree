@@ -28,6 +28,7 @@ export default function NodeView({ navigation, route })
     const chessboardRef = useRef<ChessboardRef>(null);
     const settings = useAppSelector((state) => state.settings);
     const styles = useAppSelector((state) => state.settings.styles);
+    const [flipped, setFlipped] = useState(false);
 
     useEffect(() => {
 
@@ -51,7 +52,8 @@ export default function NodeView({ navigation, route })
                             parent: null,
                             children: [],
                             name: newName,
-                            id: getNextId(nodes)
+                            id: getNextId(nodes),
+                            flipped: node.flipped
                         }
                 
                         dispatch(addNode(newTree));
@@ -68,14 +70,7 @@ export default function NodeView({ navigation, route })
     }
 
     const flipBoard = () => {
-        let fen = node.position;
-        
-        let newNode = {...node};
-        newNode.position = flipFen(fen);
-
-        dispatch(addNode(newNode));
-        setNode(newNode);
-
+        setFlipped(!flipped);
     }
 
     const onMove = ({ move, state }) => {
@@ -87,7 +82,8 @@ export default function NodeView({ navigation, route })
             parent: node.id,
             children: [],
             name: move.to,
-            id: getNextId(nodes)
+            id: getNextId(nodes),
+            flipped: node.flipped
         }
 
         dispatch(addNode(newNode));
@@ -99,7 +95,7 @@ export default function NodeView({ navigation, route })
             <Text style={[styles.headingText, {marginHorizontal: 20, marginTop: 20}]}>Tree: {root.name} </Text>
             {(node.parent && node.parent > 0) && <Text style={[styles.subHeadingText, {marginHorizontal: 20}]}>Branch: {node.name}</Text>}
             <View style={{marginTop: 20, alignSelf: 'center'}}>
-                <Chessboard ref={chessboardRef} onMove={onMove}/>
+                <Chessboard ref={chessboardRef} onMove={onMove} flipped={ flipped }/>
             </View>
             <InsetShadow
                 containerStyle={{

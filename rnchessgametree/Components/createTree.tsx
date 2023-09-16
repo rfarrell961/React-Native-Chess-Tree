@@ -33,7 +33,8 @@ export default function CreateTree({ navigation })
             parent: null,
             children: [],
             name: name,
-            id: getNextId(nodes)
+            id: getNextId(nodes),
+            flipped: false
         }
 
         dispatch(addNode(newTree));
@@ -59,7 +60,7 @@ export default function CreateTree({ navigation })
                 <Text style={styles.buttonText}>From Starting Position</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonStyle} onPress={CreateFromPosition}>
-                <Text style={styles.buttonText}>From Custom Position</Text>
+                <Text style={styles.buttonText}>Choose Start Position</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonStyleRed} onPress={() => {navigation.popToTop()}}>
                 <Text style={styles.buttonText}>Cancel</Text>

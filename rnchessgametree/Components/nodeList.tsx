@@ -11,7 +11,7 @@ import Chessboard from "./chessboardDisplayOnly";
 import { useAppDispatch } from "../Redux/hooks";
 import { deleteNode, updateNode } from "../Redux/nodesSlice";
 import ITreeNode from "../Interfaces/treeNode";
-import { getNode } from "../Utility/helper";
+import { flipFen, getNode } from "../Utility/helper";
 
 export default function NodeList({ onClick, styles, colors, nodes, parent })
 {
@@ -79,7 +79,7 @@ export default function NodeList({ onClick, styles, colors, nodes, parent })
             <TouchableOpacity style={styles.listItem} onPress={() => onClick(item)}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <View style={{marginLeft: 10, marginRight: 50, borderWidth:.5}}>
-                        <Chessboard fen={item.position} size={75}/>
+                        <Chessboard fen={item.flipped ? flipFen(item.position) : item.position} size={75}/>
                     </View>
                     <Text style={[styles.listItemText, {marginRight: 10}]}>{item.name}</Text>
     

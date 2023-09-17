@@ -65,14 +65,11 @@ export default function Chessboard({fen, size})
 
     }, [fen])
     
-
     const Cell = ({piece, squareColor}) => (
         <View style={{backgroundColor: squareColor, borderWidth: .1, flex: 1}}>
             {(piece != null) && <Image source={piece} style={{width: size / 8, height: size / 8}}/>}
         </View>
     )
-
-
 
     return (
         <View style={{

@@ -82,7 +82,7 @@ export default function getStyles(mode: number) {
             alignSelf: 'center',
             borderRadius: 5,
             margin: 20,
-            height: 40,
+            height: 50,
             justifyContent: 'center',
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 1 },

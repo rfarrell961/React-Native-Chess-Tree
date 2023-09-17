@@ -1,12 +1,18 @@
 import { useAppSelector } from "../Redux/hooks";
 
+// interface IMove {
+//     from: string,
+//     to: string
+// }
+
 export default interface ITreeNode { 
     position: string,
     parent: number | null, // Parent ID
     children: number[], // Array of child IDs
     name: string,
     id?: number,
-    flipped: boolean
+    flipped: boolean,
+    // move?: IMove // Move to reach this nodes position
 }
 
 export function getNextId(nodes: ITreeNode[])

@@ -11,6 +11,7 @@ const getNode = (id: number, nodes: ITreeNode[]): ITreeNode => {
     return null;
 }
 
+/** MAKES FEN UNUSABLE FOR CHESS LOGIC - FOR DISPLAY PURPOSES ONLY */ 
 const flipFen = (fen: string): string => {
     let newFen: string = "";
     

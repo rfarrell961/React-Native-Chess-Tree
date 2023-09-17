@@ -10,7 +10,7 @@ export default function getStyles(mode: number) {
     const colors = getColors(mode);
 
     const headerContainer : any = {
-        height: 100,
+        height: 120,
         backgroundColor: colors.background2,
         flexDirection: 'row', 
         alignItems: 'center',

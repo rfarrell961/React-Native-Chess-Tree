@@ -81,7 +81,7 @@ export default function NodeView({ navigation, route })
             position: state.fen,
             parent: node.id,
             children: [],
-            name: move.to,
+            name: move.from + " to " + move.to,
             id: getNextId(nodes),
             flipped: node.flipped
         }

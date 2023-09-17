@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CreateTree from '../Components/createTree';
 import NodeView from '../Components/nodeView';
 import HomeHeader from '../Components/homeHeader';
+import SettingsHeader from '../Components/settingsHeader';
 import SettingsPage from '../Components/settings';
 import { useAppSelector } from '../Redux/hooks';
 import { useState } from 'react';
@@ -49,10 +50,7 @@ export default function RootNav() {
                     name="Settings"
                     component={SettingsPage}
                     options={{
-                        headerStyle: {
-                            backgroundColor: colors.background
-                        },
-                        headerTitleStyle: styles.headingText
+                        header: SettingsHeader
                     }}
                 />
             </Stack.Navigator>

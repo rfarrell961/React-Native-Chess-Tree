@@ -6,7 +6,7 @@ import {
     Alert
 } from "react-native";
 import ITreeNode, {getNextId} from "../Interfaces/treeNode";
-import { addNode } from "../Redux/nodesSlice";
+import { addNode, updateNode } from "../Redux/nodesSlice";
 import { useEffect, useRef, useState } from "react";
 import Chessboard, { ChessboardRef } from "react-native-chessboard";
 import { useAppSelector, useAppDispatch } from '../Redux/hooks';
@@ -70,7 +70,14 @@ export default function NodeView({ navigation, route })
     }
 
     const flipBoard = () => {
-        setFlipped(!flipped);
+        let flip = !flipped;
+
+        setFlipped(flip);
+
+        let newNode = {...node};
+        newNode.flipped = flip;
+
+        dispatch(updateNode(newNode.id, newNode))
     }
 
     const onMove = ({ move, state }) => {

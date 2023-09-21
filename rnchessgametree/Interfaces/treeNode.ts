@@ -10,9 +10,9 @@ export default interface ITreeNode {
     parent: number | null, // Parent ID
     children: number[], // Array of child IDs
     name: string,
-    id?: number,
+    id: number,
     flipped: boolean,
-    // move?: IMove // Move to reach this nodes position
+    evaluation?: number, // Evaluation always in terms of white
 }
 
 export function getNextId(nodes: ITreeNode[])

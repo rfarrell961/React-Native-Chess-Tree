@@ -2,9 +2,9 @@
 
 ## Installation
 
-## Usage
-
-## Contributing
+1) navigate to the rnchessgametree folder
+2) Run NPM installation using `npm i`
+3) Start application using `expo start`
 
 ## License
 

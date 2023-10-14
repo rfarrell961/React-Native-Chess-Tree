@@ -30,7 +30,7 @@ export default function SettingsPage()
                 />
             </View>
 
-            <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 40}}>
+            {/* <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 40}}>
                 <Text style={[styles.subHeadingText, {marginRight: 10}]}>Pro Version</Text>
                 <Switch
                     value={(settings.isProVersion)}
@@ -38,7 +38,7 @@ export default function SettingsPage()
                         dispatch(setProVersion(!settings.isProVersion))
                     }}
                 />
-            </View>
+            </View> */}
             
         </SafeAreaView>
      )

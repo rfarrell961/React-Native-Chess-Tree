@@ -9,13 +9,15 @@ import { Swipeable } from "react-native-gesture-handler";
 import { Icon } from "react-native-elements";
 import Chessboard from "./chessboardDisplayOnly";
 import { useAppDispatch } from "../Redux/hooks";
-import { deleteNode, updateNode } from "../Redux/nodesSlice";
+import { deleteNode, updateNode, setNodes } from "../Redux/nodesSlice";
 import ITreeNode from "../Interfaces/treeNode";
 import { flipFen, getNode } from "../Utility/helper";
+import { useAppSelector } from "../Redux/hooks";
 
 export default function NodeList({ onClick, styles, colors, nodes, parent })
 {
     const dispatch = useAppDispatch(); 
+    const allNodes: ITreeNode[] = useAppSelector((state) => state.nodes.nodes);
 
     const RenderRightSwipe = () => {
         return (
@@ -71,12 +73,32 @@ export default function NodeList({ onClick, styles, colors, nodes, parent })
         );
     }
 
-    const Item = ({item}) => (
+    const makeNodeMostRecent = (node: ITreeNode) => {
+
+        let allNodesCopy = [...allNodes];
+        for (let i = 0; i < allNodesCopy.length; i++)
+        {
+            if (allNodesCopy[i].id == node.id)
+            {
+                allNodesCopy.splice(i, 1);
+                break;
+            }
+        }
+
+        allNodesCopy.unshift(node);
+        dispatch(setNodes(allNodesCopy));
+    }
+
+    const Item = ({item} : {item: ITreeNode}) => (
         <Swipeable 
             renderRightActions={RenderRightSwipe}
             onSwipeableOpen={(d, Swipeable) => DeleteRow(item.id, Swipeable)}
             >
-            <TouchableOpacity style={styles.listItem} onPress={() => onClick(item)}>
+            <TouchableOpacity style={styles.listItem} onPress={() => {
+                    makeNodeMostRecent(item);
+                    onClick(item);
+                }
+            }>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <View style={{marginLeft: 10, marginRight: 50, borderWidth:.5}}>
                         <Chessboard fen={item.flipped ? flipFen(item.position) : item.position} size={75}/>

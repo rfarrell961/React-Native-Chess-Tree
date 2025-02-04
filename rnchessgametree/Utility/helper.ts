@@ -29,4 +29,8 @@ const flipFen = (fen: string): string => {
     return newFen;
 }
 
-export { getNode, flipFen }
+const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export { getNode, flipFen, sleep }

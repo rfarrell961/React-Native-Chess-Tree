@@ -1,24 +1,13 @@
 import {
-    Text,
-    View, 
-    StyleSheet, 
+    Text, 
     SafeAreaView, 
-    //TouchableOpacity, 
-    FlatList,
-    ScrollView,
-    Alert,
     ActivityIndicator
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import { useAppSelector, useAppDispatch } from '../Redux/hooks';
 import ITreeNode from '../Interfaces/treeNode';
-// import Chessboard from "react-native-chessboard";
-import Chessboard from './chessboardDisplayOnly';
-import { Icon } from 'react-native-elements';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { deleteNode, updateNode, setNodes } from '../Redux/nodesSlice';
+import { setNodes } from '../Redux/nodesSlice';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { getNode } from '../Utility/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import InsetShadow from 'react-native-inset-shadow';
 import NodeList from './nodeList';
@@ -81,6 +70,7 @@ export default function TreeManager({ navigation })
                 containerStyle={{
                     flex: 1, 
                 }}
+                
             >
                 <NodeList 
                     onClick={listNavigate}

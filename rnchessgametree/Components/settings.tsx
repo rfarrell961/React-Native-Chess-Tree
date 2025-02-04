@@ -8,6 +8,7 @@ import getStyles from "../Styles/styles"
 import { useAppSelector, useAppDispatch } from "../Redux/hooks"
 import { useState } from "react";
 import { changePalette, setProVersion } from "../Redux/settingsSlice";
+import { init, write, read } from 'react-native-stockfish';
 
 export default function SettingsPage()
 {
@@ -30,7 +31,7 @@ export default function SettingsPage()
                 />
             </View>
 
-            {/* <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 40}}>
+            <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 40}}>
                 <Text style={[styles.subHeadingText, {marginRight: 10}]}>Pro Version</Text>
                 <Switch
                     value={(settings.isProVersion)}
@@ -38,7 +39,7 @@ export default function SettingsPage()
                         dispatch(setProVersion(!settings.isProVersion))
                     }}
                 />
-            </View> */}
+            </View>
             
         </SafeAreaView>
      )

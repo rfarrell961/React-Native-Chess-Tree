@@ -15,3 +15,7 @@ node_modules
 
 # ignore vscode files
 .vscode/
+
+# Build Files
+rnchessgametree/ios/
+rnchessgametree/android/

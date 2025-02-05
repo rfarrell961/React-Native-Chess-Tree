@@ -16,6 +16,7 @@ import NodeList from "./nodeList";
 import { Icon } from "react-native-elements";
 import { init, read, write } from "react-native-stockfish";
 import AsyncAlert from "../Utility/asyncAlert";
+import { parse } from "@babel/core";
 
 const startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -36,6 +37,7 @@ export default function NodeView({ navigation, route })
     const [advantageWhite, setAdvantageWhite] = useState(true);
     const [mateIn, setMateIn] = useState(-1);
     const [evaluation, setEvaluation] = useState(0);
+    const [runEval, setRunEval] = useState(false);
 
     useEffect(() => {
         if (settings.isProVersion)
@@ -77,6 +79,71 @@ export default function NodeView({ navigation, route })
         }
           
     }, [evaluation, mateIn])
+
+    // Read Loop
+    useEffect(() => {
+        let timeout, response, responsesArr;
+        sendEval();
+        if (runEval) {
+            const loopFunction = async () => {
+
+                response = await read();    
+                responsesArr = response.split("\r\n");
+                
+                for (const val of responsesArr)
+                {
+                    if (val === "") continue; 
+
+                    parseResponse(val);
+                }
+
+                timeout = setTimeout(loopFunction, 200);
+            };
+            loopFunction();
+        }
+    
+        return () => clearTimeout(timeout);
+      }, [runEval]);
+
+    const sendEval = async () => {
+        
+        let fen = chessboardRef.current.getState().fen;
+        await read();
+        write("stop");
+        sleep(500);
+        write("position fen " + fen);
+        sleep(500);
+        write("go depth 22");
+
+    }
+
+    const parseResponse = (response) => {
+
+        let words = response.split(" ");
+        for (let i = 0; i < words.length; i++)
+            {
+                if (words[i].trim().toLowerCase() === "score")
+                {
+                    
+                    // next word should be cp, actual score is in two words
+                    if (words[i + 1].trim().toLowerCase() === "mate")
+                    {
+                        // let matein = Number(words[i + 2])
+                        // let score = "Mate in " + Math.abs(matein) ;
+
+                        // setEvaluation(score);
+                        // setMateIn(matein);
+                    }
+                    else
+                    {
+                        let score = Number(words[i + 2]) / 100;
+
+                        setEvaluation(score);
+                        setMateIn(-1);
+                    }
+                }
+            }
+    }
 
     const splitTree = () => {
         Alert.prompt(
@@ -134,25 +201,14 @@ export default function NodeView({ navigation, route })
     }
 
     const evalNode = async () => {
-        let fen = chessboardRef.current.getState().fen;
-        await read();
-        write("stop");
-        sleep(500);
-        write("position fen " + fen);
-        sleep(500);
-        write("go depth 22");
 
-        let response : string = "";
-        do
+        if (runEval)
         {
-            await AsyncAlert("Read2", response);//Alert.alert(response);
-            response = await read();    
-            let responses = response.split("\r\n");
-            console.log(responses);
+            setRunEval(false);
+            return;
         }
-        while(response !== "")
 
-        Alert.alert("Done!");
+        setRunEval(true);
     }
 
     return (
@@ -160,19 +216,22 @@ export default function NodeView({ navigation, route })
             <Text style={[styles.headingText, {marginHorizontal: 20, marginTop: 20}]}>Tree: {root.name} </Text>
             {(node.parent && node.parent > 0) && <Text style={[styles.subHeadingText, {marginHorizontal: 20}]}>Branch: {node.name}</Text>}
             <View style={{marginTop: 20, alignSelf: 'center'}}>
-                {advantageWhite && settings.isProVersion &&
-                <View style={{display:'flex', flexDirection:'row', borderColor:'black', borderWidth:1, height: 10}}>
-                    <View style={{backgroundColor: 'white', flex: 5 + Math.abs(evaluation)}}/>
-                    <View style={{backgroundColor: 'black', flex: 5}}/>
-                </View>
-                }
-                {!advantageWhite && settings.isProVersion &&
-                <View style={{display:'flex', flexDirection:'row', borderColor:'black', borderWidth:1, height: 10}}>
-                    <View style={{backgroundColor: 'white', flex: 5}}/>
-                    <View style={{backgroundColor: 'black', flex: 5 + Math.abs(evaluation)}}/>
-                </View>
-                }
-                
+                {settings.isProVersion &&
+                <View>
+                    <Text style={[styles.subHeadingText]}>{"+" + Math.abs(evaluation) + " " + (advantageWhite ? "White" : "Black")}</Text>
+                    {advantageWhite &&
+                    <View style={{display:'flex', flexDirection:'row', borderColor:'black', borderWidth:1, height: 10}}>
+                        <View style={{backgroundColor: 'white', flex: 5 + Math.abs(evaluation)}}/>
+                        <View style={{backgroundColor: 'black', flex: 5}}/>
+                    </View>
+                    }
+                    {!advantageWhite &&
+                    <View style={{display:'flex', flexDirection:'row', borderColor:'black', borderWidth:1, height: 10}}>
+                        <View style={{backgroundColor: 'white', flex: 5}}/>
+                        <View style={{backgroundColor: 'black', flex: 5 + Math.abs(evaluation)}}/>
+                    </View>
+                    }
+                </View>}
                 <Chessboard ref={chessboardRef} onMove={onMove} flipped={ flipped }/>
             </View>
             <InsetShadow

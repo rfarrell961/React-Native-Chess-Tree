@@ -35,16 +35,17 @@ export default function NodeView({ navigation, route })
 
     //const [whiteToMove, setWhiteToMove] = useState(true);
     const [advantageWhite, setAdvantageWhite] = useState(true);
-    const [mateIn, setMateIn] = useState(-1);
+    const [mateIn, setMateIn] = useState(0);
     const [evaluation, setEvaluation] = useState(0);
     const [runEval, setRunEval] = useState(false);
 
     useEffect(() => {
+
         if (settings.isProVersion)
         {
-            init();
-            sleep(500);            
+            init();       
         }
+
     }, [])
 
     useEffect(() => {
@@ -53,6 +54,11 @@ export default function NodeView({ navigation, route })
             return;
 
         chessboardRef.current.resetBoard(node.position);
+        
+        if (settings.isProVersion)
+        {
+            setRunEval(false);
+        }
 
     }, [node])
 
@@ -62,8 +68,7 @@ export default function NodeView({ navigation, route })
         let fen = chessboardRef.current.getState().fen;
         let whiteToMove = fen.split(" ")[1] == "w";
 
-        console.log(whiteToMove);
-        if (mateIn > 0)
+        if (mateIn != 0)
         {
             if ((mateIn > 0 && whiteToMove) || (mateIn < 0 && !whiteToMove))
                 setAdvantageWhite(true); 
@@ -82,9 +87,17 @@ export default function NodeView({ navigation, route })
 
     // Read Loop
     useEffect(() => {
+
+        if (!settings.isProVersion)
+        {
+            return;
+        }
+
         let timeout, response, responsesArr;
-        sendEval();
-        if (runEval) {
+        if (runEval) 
+        {
+
+            sendEval();
             const loopFunction = async () => {
 
                 response = await read();    
@@ -101,18 +114,25 @@ export default function NodeView({ navigation, route })
             };
             loopFunction();
         }
+        else
+        {
+            write("stop")
+        }
     
         return () => clearTimeout(timeout);
-      }, [runEval]);
+    }, [runEval]);
 
     const sendEval = async () => {
         
         let fen = chessboardRef.current.getState().fen;
+
+        // Clear read buffer
         await read();
+
         write("stop");
-        sleep(500);
+        sleep(100);
         write("position fen " + fen);
-        sleep(500);
+        sleep(100);
         write("go depth 22");
 
     }
@@ -128,18 +148,15 @@ export default function NodeView({ navigation, route })
                     // next word should be cp, actual score is in two words
                     if (words[i + 1].trim().toLowerCase() === "mate")
                     {
-                        // let matein = Number(words[i + 2])
-                        // let score = "Mate in " + Math.abs(matein) ;
-
-                        // setEvaluation(score);
-                        // setMateIn(matein);
+                        let matein = Number(words[i + 2])
+                        setMateIn(matein);
                     }
                     else
                     {
                         let score = Number(words[i + 2]) / 100;
 
                         setEvaluation(score);
-                        setMateIn(-1);
+                        setMateIn(0);
                     }
                 }
             }
@@ -216,22 +233,35 @@ export default function NodeView({ navigation, route })
             <Text style={[styles.headingText, {marginHorizontal: 20, marginTop: 20}]}>Tree: {root.name} </Text>
             {(node.parent && node.parent > 0) && <Text style={[styles.subHeadingText, {marginHorizontal: 20}]}>Branch: {node.name}</Text>}
             <View style={{marginTop: 20, alignSelf: 'center'}}>
-                {settings.isProVersion &&
+                {settings.isProVersion && runEval &&
                 <View>
-                    <Text style={[styles.subHeadingText]}>{"+" + Math.abs(evaluation) + " " + (advantageWhite ? "White" : "Black")}</Text>
-                    {advantageWhite &&
-                    <View style={{display:'flex', flexDirection:'row', borderColor:'black', borderWidth:1, height: 10}}>
-                        <View style={{backgroundColor: 'white', flex: 5 + Math.abs(evaluation)}}/>
-                        <View style={{backgroundColor: 'black', flex: 5}}/>
+                    {mateIn != 0 && 
+                    <View>
+                        <Text style={[styles.subHeadingText]}>{"Mate In " + mateIn + (advantageWhite ? " White" : " Black")}</Text>
+                        <View style={{display:'flex', flexDirection:'row', borderColor:'black', borderWidth:1, height: 10}}>
+                            <View style={{backgroundColor: advantageWhite ? "white" : "black", flex: 1}}/>
+                        </View>
                     </View>
                     }
-                    {!advantageWhite &&
-                    <View style={{display:'flex', flexDirection:'row', borderColor:'black', borderWidth:1, height: 10}}>
-                        <View style={{backgroundColor: 'white', flex: 5}}/>
-                        <View style={{backgroundColor: 'black', flex: 5 + Math.abs(evaluation)}}/>
+                    {mateIn == 0 && 
+                    <View>
+                        <Text style={[styles.subHeadingText]}>{"+" + Math.abs(evaluation) + (advantageWhite ? " White" : " Black")}</Text>
+                        {advantageWhite &&
+                        <View style={{display:'flex', flexDirection:'row', borderColor:'black', borderWidth:1, height: 10}}>
+                            <View style={{backgroundColor: 'white', flex: 5 + Math.abs(evaluation)}}/>
+                            <View style={{backgroundColor: 'black', flex: 5}}/>
+                        </View>
+                        }
+                        {!advantageWhite &&
+                        <View style={{display:'flex', flexDirection:'row', borderColor:'black', borderWidth:1, height: 10}}>
+                            <View style={{backgroundColor: 'white', flex: 5}}/>
+                            <View style={{backgroundColor: 'black', flex: 5 + Math.abs(evaluation)}}/>
+                        </View>
+                        }
                     </View>
                     }
-                </View>}
+                </View>
+                }
                 <Chessboard ref={chessboardRef} onMove={onMove} flipped={ flipped }/>
             </View>
             <InsetShadow

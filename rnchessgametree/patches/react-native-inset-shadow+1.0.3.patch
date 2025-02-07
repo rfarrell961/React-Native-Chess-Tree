@@ -1,0 +1,50 @@
+diff --git a/node_modules/react-native-inset-shadow/src/index.js b/node_modules/react-native-inset-shadow/src/index.js
+index 76dbbc3..ce707e6 100644
+--- a/node_modules/react-native-inset-shadow/src/index.js
++++ b/node_modules/react-native-inset-shadow/src/index.js
+@@ -31,7 +31,7 @@ const InsetShadow = ({
+   return (
+     <View style={[styles.container, containerStyle]}>
+       {children}
+-      <Shadows {...shadowProps} />
++      <Shadows {...defaultShadowProps} {...shadowProps} />
+     </View>
+   )
+ }
+@@ -60,8 +60,7 @@ InsetShadow.propTypes = {
+   elevation: PropTypes.number,
+ }
+ 
+-InsetShadow.defaultProps = {
+-  containerStyle: {},
++const defaultShadowProps = {
+   left: true,
+   top: true,
+   right: true,
+diff --git a/node_modules/react-native-inset-shadow/src/shadows.js b/node_modules/react-native-inset-shadow/src/shadows.js
+index 098d975..8a16ce9 100644
+--- a/node_modules/react-native-inset-shadow/src/shadows.js
++++ b/node_modules/react-native-inset-shadow/src/shadows.js
+@@ -5,7 +5,7 @@ const shadowTypes = ['left', 'top', 'right', 'bottom']
+ 
+ const Shadows = (props) => {
+   return shadowTypes.map((shadow, i) => {
+-    if(!props[shadow]) {
++    if(props[shadow] != null && !props[shadow]) {
+       return null
+     }
+     const { shadowColor, shadowOpacity, shadowOffset, shadowRadius, elevation } = props
+@@ -22,12 +22,4 @@ const Shadows = (props) => {
+   })
+ }
+ 
+-// default to show all edges
+-Shadows.defaultProps = {
+-  left: true,
+-  top: true,
+-  right: true,
+-  bottom: true
+-}
+-
+ export default Shadows
+\ No newline at end of file
